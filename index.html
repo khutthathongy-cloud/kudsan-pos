@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>KUDSAN POS</title>
 
 <style>
+
 body{
 font-family:Tahoma,sans-serif;
 margin:0;
@@ -32,7 +34,6 @@ padding:12px;
 border:none;
 cursor:pointer;
 font-size:16px;
-background:white;
 }
 
 .active{
@@ -64,6 +65,10 @@ cursor:pointer;
 text-align:center;
 }
 
+.menu-card:hover{
+background:#fff0e8;
+}
+
 .cart-box{
 background:white;
 padding:15px;
@@ -74,41 +79,77 @@ margin-top:15px;
 .cart-row{
 display:flex;
 justify-content:space-between;
+align-items:center;
 padding:10px 0;
 border-bottom:1px solid #eee;
-}
-
-button{
-cursor:pointer;
 }
 
 .qty-btn{
 width:32px;
 height:32px;
-margin:2px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+font-size:16px;
+}
+
+.plus{
+background:#28a745;
+color:white;
+}
+
+.minus{
+background:#ffc107;
+}
+
+.remove{
+background:red;
+color:white;
+margin-left:5px;
+}
+
+.main-btn{
+padding:10px 15px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+color:white;
+margin-top:10px;
 }
 
 .save{
 background:green;
-color:white;
-padding:10px;
-border:none;
-border-radius:6px;
 }
 
 .clear{
 background:red;
-color:white;
-padding:10px;
-border:none;
-border-radius:6px;
 }
 
 .queue-card{
 background:white;
 padding:10px;
-margin-bottom:10px;
 border-radius:10px;
+margin-bottom:10px;
+}
+
+.wait{
+border-left:8px solid #ffc107;
+}
+
+.making{
+border-left:8px solid orange;
+}
+
+.done{
+border-left:8px solid green;
+}
+
+.status-btn{
+background:#0078d7;
+color:white;
+padding:8px;
+border:none;
+border-radius:6px;
 }
 
 .stat{
@@ -117,8 +158,10 @@ padding:15px;
 border-radius:10px;
 margin-bottom:10px;
 }
+
 </style>
 </head>
+
 <body>
 
 <header>KUDSAN POS</header>
@@ -126,9 +169,10 @@ margin-bottom:10px;
 <div class="tabs">
 <button class="tab active" onclick="openPage(event,'order')">รับออเดอร์</button>
 <button class="tab" onclick="openPage(event,'queue')">คิวชง</button>
-<button class="tab" onclick="openPage(event,'history')">ประวัติ</button>
 <button class="tab" onclick="openPage(event,'dashboard')">Dashboard</button>
 </div>
+
+<!-- ORDER -->
 
 <div id="order" class="page show">
 
@@ -142,13 +186,13 @@ margin-bottom:10px;
 
 <div id="cart"></div>
 
-<h2>รวม: <span id="total">0</span> บาท</h2>
+<h2>รวม : <span id="total">0</span> บาท</h2>
 
-<button class="save" onclick="saveOrder()">
+<button class="main-btn save" onclick="saveOrder()">
 บันทึกออเดอร์
 </button>
 
-<button class="clear" onclick="clearCart()">
+<button class="main-btn clear" onclick="clearCart()">
 ล้างรายการ
 </button>
 
@@ -156,15 +200,14 @@ margin-bottom:10px;
 
 </div>
 
+<!-- QUEUE -->
+
 <div id="queue" class="page">
 <h2>คิวชง</h2>
 <div id="queueList"></div>
 </div>
 
-<div id="history" class="page">
-<h2>ประวัติออเดอร์</h2>
-<div id="historyList"></div>
-</div>
+<!-- DASHBOARD -->
 
 <div id="dashboard" class="page">
 
@@ -172,12 +215,12 @@ margin-bottom:10px;
 
 <div class="stat">
 💰 ยอดขายทั้งหมด
-<h3 id="sales">0 บาท</h3>
+<h1 id="sales">0</h1>
 </div>
 
 <div class="stat">
 🥤 จำนวนแก้วทั้งหมด
-<h3 id="cups">0 แก้ว</h3>
+<h1 id="cups">0</h1>
 </div>
 
 <div class="stat">
@@ -189,36 +232,49 @@ margin-bottom:10px;
 
 <script>
 
-const menus = [
-{name:'ชาไทย',price:50},
-{name:'ชาเขียว',price:50},
-{name:'ชาพีช',price:45},
-{name:'นมสด',price:45},
-{name:'โกโก้',price:55},
-{name:'Americano',price:50},
-{name:'Latte',price:55}
+const menus=[
+
+{name:"ชาไทย",price:50},
+{name:"ชาเขียว",price:50},
+{name:"ชาพีช",price:45},
+{name:"ชาดำ",price:45},
+{name:"ชามะนาว",price:45},
+
+{name:"นมสด",price:45},
+{name:"นมชมพู",price:45},
+
+{name:"Pure Matcha",price:50},
+{name:"Matcha Latte",price:55},
+
+{name:"โกโก้",price:55},
+
+{name:"Espresso",price:50},
+{name:"Americano",price:50},
+{name:"Honey Americano",price:50},
+{name:"Latte",price:55},
+{name:"Cappuccino",price:55},
+{name:"Mocha",price:55}
+
 ];
 
 let cart=[];
 
 function openPage(evt,page){
 
-document.querySelectorAll('.page')
-.forEach(p=>p.classList.remove('show'));
+document.querySelectorAll('.page').forEach(x=>{
+x.classList.remove('show');
+});
 
-document.querySelectorAll('.tab')
-.forEach(t=>t.classList.remove('active'));
+document.querySelectorAll('.tab').forEach(x=>{
+x.classList.remove('active');
+});
 
-document.getElementById(page)
-.classList.add('show');
-
-if(evt){
+document.getElementById(page).classList.add('show');
 evt.target.classList.add('active');
-}
 
 if(page==="queue") loadQueue();
-if(page==="history") loadHistory();
 if(page==="dashboard") loadDashboard();
+
 }
 
 function renderMenus(){
@@ -227,13 +283,11 @@ let html='';
 
 menus.forEach(menu=>{
 
-html += `
+html+=`
 <div class="menu-card"
 onclick="addMenu('${menu.name}',${menu.price})">
-
 <h3>${menu.name}</h3>
 <p>${menu.price} บาท</p>
-
 </div>
 `;
 
@@ -245,16 +299,20 @@ document.getElementById('menuGrid').innerHTML=html;
 
 function addMenu(name,price){
 
-const found=cart.find(x=>x.name===name);
+let found=cart.find(i=>i.name===name);
 
 if(found){
+
 found.qty++;
+
 }else{
+
 cart.push({
-name:name,
-price:price,
+name,
+price,
 qty:1
 });
+
 }
 
 renderCart();
@@ -268,9 +326,10 @@ let total=0;
 
 cart.forEach((item,index)=>{
 
-total += item.price * item.qty;
+total+=item.qty*item.price;
 
-html += `
+html+=`
+
 <div class="cart-row">
 
 <div>
@@ -280,15 +339,24 @@ ${item.price} บาท
 
 <div>
 
-<button class="qty-btn"
-onclick="decreaseItem(${index})">-</button>
+<button
+class="qty-btn minus"
+onclick="decreaseItem(${index})">
+-
+</button>
 
+<b style="padding:0 8px;">
 ${item.qty}
-
-<button class="qty-btn"
-onclick="increaseItem(${index})">+</button>
+</b>
 
 <button
+class="qty-btn plus"
+onclick="increaseItem(${index})">
++
+</button>
+
+<button
+class="qty-btn remove"
 onclick="removeItem(${index})">
 🗑
 </button>
@@ -296,6 +364,7 @@ onclick="removeItem(${index})">
 </div>
 
 </div>
+
 `;
 
 });
@@ -305,32 +374,43 @@ document.getElementById('total').innerText=total;
 
 }
 
-function increaseItem(i){
-cart[i].qty++;
-renderCart();
-}
+function increaseItem(index){
 
-function decreaseItem(i){
-
-cart[i].qty--;
-
-if(cart[i].qty<=0){
-cart.splice(i,1);
-}
+cart[index].qty++;
 
 renderCart();
 
 }
 
-function removeItem(i){
+function decreaseItem(index){
 
-cart.splice(i,1);
+cart[index].qty--;
+
+if(cart[index].qty<=0){
+
+cart.splice(index,1);
+
+}
 
 renderCart();
+
+}
+
+function removeItem(index){
+
+if(confirm('ลบรายการ?')){
+
+cart.splice(index,1);
+
+renderCart();
+
+}
 
 }
 
 function clearCart(){
+
+if(confirm('ล้างทั้งหมด?')){
 
 cart=[];
 
@@ -338,29 +418,34 @@ renderCart();
 
 }
 
+}
+
 function saveOrder(){
 
 if(cart.length===0){
+
 alert('ยังไม่มีรายการ');
+
 return;
+
 }
 
 let orders=
 JSON.parse(
-localStorage.getItem('orders') || '[]'
+localStorage.getItem('orders')||'[]'
 );
+
+let orderNo=
+"ORD-"+
+String(
+orders.length+1
+).padStart(4,'0');
 
 orders.push({
 
-orderNo:
-'ORD-'+
-String(orders.length+1)
-.padStart(4,'0'),
-
-time:new Date().toLocaleString('th-TH'),
-
-status:'รอชง',
-
+orderNo,
+time:new Date().toLocaleString(),
+status:"รอชง",
 items:[...cart]
 
 });
@@ -370,7 +455,7 @@ localStorage.setItem(
 JSON.stringify(orders)
 );
 
-alert('บันทึกสำเร็จ');
+alert("บันทึกสำเร็จ "+orderNo);
 
 cart=[];
 
@@ -382,47 +467,57 @@ function loadQueue(){
 
 let orders=
 JSON.parse(
-localStorage.getItem('orders') || '[]'
+localStorage.getItem('orders')||'[]'
 );
 
 let html='';
 
-orders.forEach((o,index)=>{
+orders.forEach((order,index)=>{
 
-if(o.status==='เสร็จแล้ว'){
-return;
-}
+let cls='wait';
 
-html += `
-<div class="queue-card">
+if(order.status==='กำลังชง')
+cls='making';
 
-<h3>${o.orderNo}</h3>
+if(order.status==='เสร็จแล้ว')
+cls='done';
 
-${o.time}
+html+=`
 
-<br><br>
+<div class="queue-card ${cls}">
 
-${o.items.map(i=>
-i.name+' x'+i.qty
+<h3>${order.orderNo}</h3>
+
+<div>${order.time}</div>
+
+<br>
+
+${order.items.map(x=>
+`${x.name} x${x.qty}`
 ).join('<br>')}
 
 <br><br>
 
-${o.status}
+<b>สถานะ :</b>
+${order.status}
 
 <br><br>
 
-<button onclick="nextStatus(${index})">
+<button
+class="status-btn"
+onclick="nextStatus(${index})">
+
 เปลี่ยนสถานะ
+
 </button>
 
 </div>
+
 `;
 
 });
 
-document.getElementById('queueList').innerHTML =
-html || 'ไม่มีคิว';
+document.getElementById('queueList').innerHTML=html;
 
 }
 
@@ -430,16 +525,16 @@ function nextStatus(index){
 
 let orders=
 JSON.parse(
-localStorage.getItem('orders') || '[]'
+localStorage.getItem('orders')||'[]'
 );
 
-if(orders[index].status==='รอชง'){
+if(orders[index].status==="รอชง"){
 
-orders[index].status='กำลังชง';
+orders[index].status="กำลังชง";
 
-}else{
+}else if(orders[index].status==="กำลังชง"){
 
-orders[index].status='เสร็จแล้ว';
+orders[index].status="เสร็จแล้ว";
 
 }
 
@@ -452,87 +547,56 @@ loadQueue();
 
 }
 
-function loadHistory(){
-
-let orders=
-JSON.parse(
-localStorage.getItem('orders') || '[]'
-);
-
-let html='';
-
-orders
-.filter(x=>x.status==='เสร็จแล้ว')
-.reverse()
-.forEach(o=>{
-
-html += `
-<div class="queue-card">
-
-<h3>${o.orderNo}</h3>
-
-${o.time}
-
-</div>
-`;
-
-});
-
-document.getElementById('historyList').innerHTML =
-html || 'ยังไม่มีประวัติ';
-
-}
-
 function loadDashboard(){
 
 let orders=
 JSON.parse(
-localStorage.getItem('orders') || '[]'
+localStorage.getItem('orders')||'[]'
 );
 
-let cups=0;
-let sales=0;
-
-let stats={};
+let totalSales=0;
+let totalCups=0;
+let menuStats={};
 
 orders.forEach(order=>{
 
 order.items.forEach(item=>{
 
-cups+=item.qty;
-sales+=(item.qty*item.price);
+totalSales+=item.qty*item.price;
 
-stats[item.name]=
-(stats[item.name]||0)+item.qty;
+totalCups+=item.qty;
+
+menuStats[item.name]=
+(menuStats[item.name]||0)
++item.qty;
 
 });
 
 });
 
-document.getElementById('cups').innerText =
-cups+' แก้ว';
+document.getElementById('sales').innerText=
+totalSales+" บาท";
 
-document.getElementById('sales').innerText =
-sales+' บาท';
+document.getElementById('cups').innerText=
+totalCups+" แก้ว";
+
+let ranking=
+Object.entries(menuStats)
+.sort((a,b)=>b[1]-a[1]);
 
 let html='';
 
-Object.entries(stats)
-.sort((a,b)=>b[1]-a[1])
-.forEach(item=>{
+ranking.forEach(item=>{
 
-html += `
+html+=`
 <div>
-${item[0]}
-:
-${item[1]} แก้ว
+${item[0]} : ${item[1]} แก้ว
 </div>
 `;
 
 });
 
-document.getElementById('topMenus').innerHTML =
-html || 'ยังไม่มีข้อมูล';
+document.getElementById('topMenus').innerHTML=html;
 
 }
 
