@@ -183,7 +183,6 @@ border-left:8px solid green;
 }
 
 .status-btn{
-.status-btn{
 
 width:100%;
 
@@ -323,8 +322,6 @@ onclick="filterMenu('โซดา')">
 
 <!-- DASHBOARD -->
 
-<div id="dashboard" class="page">
-
 <div id="history" class="page">
 
 <h2>ประวัติออเดอร์</h2>
@@ -333,7 +330,7 @@ onclick="filterMenu('โซดา')">
 
 </div>
 
-<h2>Dashboard</h2>
+<div id="dashboard" class="page">
 
 <div class="stat">
 💰 ยอดขายทั้งหมด
@@ -845,59 +842,32 @@ i.qty
 }
 
 function deleteOrder(orderNo){
-57
- 
-58
+
 if(
-59
 !confirm(
-60
 'ลบออเดอร์นี้ ?'
-61
 )
-62
 ){
-63
 return;
-64
 }
-65
- 
-66
+
 let orders=
-67
 JSON.parse(
-68
 localStorage.getItem('orders') || '[]'
-69
 );
-70
- 
-71
+
 orders=
-72
 orders.filter(
-73
 o=>o.orderNo!==orderNo
-74
 );
-75
- 
-76
+
 localStorage.setItem(
-77
 'orders',
-78
 JSON.stringify(orders)
-79
 );
-80
- 
-81
+
 loadHistory();
-82
- 
-83
+
 }
 
 renderMenus();
