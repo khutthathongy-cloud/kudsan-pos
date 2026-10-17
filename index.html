@@ -214,8 +214,17 @@ cursor:pointer;
 
 <div class="tabs">
 <button class="tab active" onclick="openPage(event,'order')">รับออเดอร์</button>
-<button class="tab" onclick="openPage(event,'queue')">คิวชง</button>
-<button class="tab" onclick="openPage(event,'dashboard')">Dashboard</button>
+<button class="tab" onclick="openPage(event,'queue')">
+คิวชง
+</button>
+
+<button class="tab" onclick="openPage(event,'history')">
+ประวัติ
+</button>
+
+<button class="tab" onclick="openPage(event,'dashboard')">
+Dashboard
+</button>
 </div>
 
 <!-- ORDER -->
@@ -316,6 +325,14 @@ onclick="filterMenu('โซดา')">
 
 <div id="dashboard" class="page">
 
+<div id="history" class="page">
+
+<h2>ประวัติออเดอร์</h2>
+
+<div id="historyList"></div>
+
+</div>
+
 <h2>Dashboard</h2>
 
 <div class="stat">
@@ -391,8 +408,14 @@ x.classList.remove('active');
 document.getElementById(page).classList.add('show');
 evt.target.classList.add('active');
 
-if(page==="queue") loadQueue();
-if(page==="dashboard") loadDashboard();
+if(page==="queue")
+loadQueue();
+
+if(page==="history")
+loadHistory();
+
+if(page==="dashboard")
+loadDashboard();
 
 }
 
@@ -725,6 +748,158 @@ m => m.category === category
 renderMenus(menuList);
 
 }
+function loadHistory(){
+
+let orders=
+JSON.parse(
+localStorage.getItem('orders') || '[]'
+);
+
+let html='';
+
+orders
+.filter(x => x.status === 'เสร็จแล้ว')
+.reverse()
+.forEach((order,index)=>{
+
+html += `
+
+<div class="queue-card">
+
+<h3>${order.orderNo}</h3>
+
+<p>
+${order.time}
+</p>
+
+${order.items.map(item =>
+
+`
+${item.name}
+x ${item.qty}
+`
+
+).join('<br>')}
+
+<br><br>
+
+<button
+onclick="viewOrder('${order.orderNo}')">
+
+👁 ดู
+
+</button>
+
+<button
+onclick="restoreOrder('${order.orderNo}')">
+
+✏️ แก้ไข
+
+</button>
+
+<button
+onclick="deleteOrder('${order.orderNo}')">
+
+🗑 ลบ
+
+</button>
+
+</div>
+
+`;
+
+});
+
+document.getElementById(
+'historyList'
+).innerHTML =
+html || '<h3>ยังไม่มีประวัติ</h3>';
+
+}
+function viewOrder(orderNo){
+
+let orders=
+JSON.parse(
+localStorage.getItem('orders') || '[]'
+);
+
+let order=
+orders.find(
+o=>o.orderNo===orderNo
+);
+
+alert(
+
+order.items
+.map(i=>
+
+i.name +
+' x ' +
+i.qty
+
+)
+.join('\n')
+
+);
+
+}
+
+function deleteOrder(orderNo){
+57
+ 
+58
+if(
+59
+!confirm(
+60
+'ลบออเดอร์นี้ ?'
+61
+)
+62
+){
+63
+return;
+64
+}
+65
+ 
+66
+let orders=
+67
+JSON.parse(
+68
+localStorage.getItem('orders') || '[]'
+69
+);
+70
+ 
+71
+orders=
+72
+orders.filter(
+73
+o=>o.orderNo!==orderNo
+74
+);
+75
+ 
+76
+localStorage.setItem(
+77
+'orders',
+78
+JSON.stringify(orders)
+79
+);
+80
+ 
+81
+loadHistory();
+82
+ 
+83
+}
+
 renderMenus();
 renderCart();
 
