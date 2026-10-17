@@ -6,6 +6,25 @@
 <title>KUDSAN POS</title>
 
 <style>
+.status-btn{
+
+width:100%;
+
+padding:18px;
+
+font-size:22px;
+
+font-weight:bold;
+
+background:#ff6b35;
+
+color:white;
+
+border:none;
+
+border-radius:12px;
+
+}
 body{
 font-family:Tahoma,sans-serif;
 margin:0;
@@ -135,6 +154,48 @@ margin-bottom:10px;
 <h2>เลือกเมนู</h2>
 
 <div class="menu-grid" id="menuGrid"></div>
+<div class="cart-box">
+
+<h3>รายละเอียดออเดอร์</h3>
+
+<p>ความหวาน</p>
+<select id="sweetness">
+<option value="0%">0%</option>
+<option value="25%">25%</option>
+<option value="50%">50%</option>
+<option value="75%">75%</option>
+<option value="100%" selected>100%</option>
+</select>
+
+<p>ท็อปปิ้ง</p>
+<select id="topping">
+<option value="ไม่ใส่|0">ไม่ใส่</option>
+<option value="ไข่มุก|10">ไข่มุก +10</option>
+<option value="ชีส|15">ชีส +15</option>
+<option value="วิปครีม|15">วิปครีม +15</option>
+<option value="บุก|10">บุก +10</option>
+</select>
+
+<p>รูปแบบการเสิร์ฟ</p>
+<select id="serveType">
+<option>พร้อมดื่ม</option>
+<option>แยกน้ำ</option>
+</select>
+
+<p>ประเภทออเดอร์</p>
+<select id="orderType">
+<option>หน้าร้าน</option>
+<option>เดลิเวอรี่</option>
+</select>
+
+<p>หมายเหตุ</p>
+<textarea
+id="note"
+rows="3"
+style="width:100%;">
+</textarea>
+
+</div>
 
 <div class="cart-box">
 
@@ -169,8 +230,31 @@ margin-bottom:10px;
 <div id="dashboard" class="page">
 
 <h2>Dashboard</h2>
+<div class="stat">
+
+📅 ออเดอร์วันนี้
+
+<h3 id="todayOrders">0</h3>
+
+</div>
 
 <div class="stat">
+
+💵 ยอดขายวันนี้
+
+<h3 id="todaySales">0 บาท</h3>
+
+</div>
+<div class="stat">
+<div class="stat">
+📅 ออเดอร์วันนี้
+<h3 id="todayOrders">0</h3>
+</div>
+
+<div class="stat">
+💵 ยอดขายวันนี้
+<h3 id="todaySales">0 บาท</h3>
+</div>
 💰 ยอดขายทั้งหมด
 <h3 id="sales">0 บาท</h3>
 </div>
@@ -245,6 +329,55 @@ document.getElementById('menuGrid').innerHTML=html;
 
 function addMenu(name,price){
 
+const sweetness =
+document.getElementById("sweetness").value;
+
+const toppingRaw =
+document.getElementById("topping").value;
+
+const toppingName =
+toppingRaw.split("|")[0];
+
+const toppingPrice =
+parseInt(
+toppingRaw.split("|")[1]
+);
+
+const serveType =
+document.getElementById("serveType").value;
+
+const orderType =
+document.getElementById("orderType").value;
+
+const note =
+document.getElementById("note").value;
+
+cart.push({
+
+name:name,
+
+price:price,
+
+sweetness:sweetness,
+
+topping:toppingName,
+
+toppingPrice:toppingPrice,
+
+serveType:serveType,
+
+orderType:orderType,
+
+note:note,
+
+qty:1
+
+});
+
+renderCart();
+
+}
+
 const found=cart.find(x=>x.name===name);
 
 if(found){
@@ -268,7 +401,9 @@ let total=0;
 
 cart.forEach((item,index)=>{
 
-total += item.price * item.qty;
+total +=
+(item.price + item.toppingPrice)
+* item.qty;
 
 html += `
 <div class="cart-row">
@@ -276,6 +411,31 @@ html += `
 <div>
 <b>${item.name}</b><br>
 ${item.price} บาท
+
+<br>
+
+หวาน :
+${item.sweetness}
+
+<br>
+
+ท็อปปิ้ง :
+${item.topping}
+
+<br>
+
+เสิร์ฟ :
+${item.serveType}
+
+<br>
+
+ประเภท :
+${item.orderType}
+
+<br>
+
+หมายเหตุ :
+${item.note || '-'}
 </div>
 
 <div>
@@ -402,9 +562,38 @@ ${o.time}
 
 <br><br>
 
-${o.items.map(i=>
-i.name+' x'+i.qty
-).join('<br>')}
+${o.items.map(i=>`
+
+${i.name}
+x${i.qty}
+
+<br>
+
+หวาน :
+${i.sweetness}
+
+<br>
+
+ท็อปปิ้ง :
+${i.topping}
+
+<br>
+
+เสิร์ฟ :
+${i.serveType}
+
+<br>
+
+ประเภท :
+${i.orderType}
+
+<br>
+
+หมายเหตุ :
+${i.note}
+
+`
+).join('<br><br>')}
 
 <br><br>
 
@@ -412,9 +601,18 @@ ${o.status}
 
 <br><br>
 
-<button onclick="nextStatus(${index})">
-เปลี่ยนสถานะ
+<button
+class="status-btn"
+onclick="nextStatus(${index})">
+
+${o.status==="รอชง"
+?
+"เริ่มชง"
+:
+"เสร็จแล้ว"}
+
 </button>
+
 
 </div>
 `;
@@ -468,11 +666,40 @@ orders
 
 html += `
 <div class="queue-card">
-
 <h3>${o.orderNo}</h3>
 
 ${o.time}
 
+<br><br>
+
+${o.items.map(i=>
+
+i.name+" x"+i.qty
+
+).join("<br>")}
+
+<br><br>
+
+<button
+onclick="viewOrder(${orders.indexOf(o)})">
+
+ดู
+
+</button>
+
+<button
+onclick="restoreOrder(${orders.indexOf(o)})">
+
+แก้ไข
+
+</button>
+
+<button
+onclick="deleteOrder(${orders.indexOf(o)})">
+
+ลบ
+
+</button>
 </div>
 `;
 
@@ -485,6 +712,37 @@ html || 'ยังไม่มีประวัติ';
 
 function loadDashboard(){
 
+let cups=0;
+let sales=0;
+let todaySales=0;
+let todayOrders=0;
+
+...
+
+document.getElementById('cups').innerText =
+cups+' แก้ว';
+
+document.getElementById('sales').innerText =
+sales+' บาท';
+
+document.getElementById(
+"todayOrders"
+).innerText =
+todayOrders + " ออเดอร์";
+
+document.getElementById(
+"todaySales"
+).innerText =
+todaySales + " บาท";
+
+document.getElementById('topMenus').innerHTML =
+html || 'ยังไม่มีข้อมูล';
+
+}
+
+const today =
+new Date()
+.toLocaleDateString();
 let orders=
 JSON.parse(
 localStorage.getItem('orders') || '[]'
@@ -497,10 +755,32 @@ let stats={};
 
 orders.forEach(order=>{
 
+const orderDate=
+new Date(order.time)
+.toLocaleDateString();
+
+if(orderDate===today){
+
+todayOrders++;
+
+}
+
 order.items.forEach(item=>{
 
 cups+=item.qty;
-sales+=(item.qty*item.price);
+sales+=
+item.qty*
+(item.price+
+(item.toppingPrice||0));
+
+if(orderDate===today){
+
+todaySales+=
+item.qty*
+(item.price+
+(item.toppingPrice||0));
+
+}
 
 stats[item.name]=
 (stats[item.name]||0)+item.qty;
@@ -535,7 +815,65 @@ document.getElementById('topMenus').innerHTML =
 html || 'ยังไม่มีข้อมูล';
 
 }
+function viewOrder(index){
 
+let orders=
+JSON.parse(
+localStorage.getItem("orders") ||
+"[]"
+);
+
+alert(
+JSON.stringify(
+orders[index],
+null,
+2
+)
+);
+
+}
+
+function restoreOrder(index){
+
+let orders=
+JSON.parse(
+localStorage.getItem("orders") ||
+"[]"
+);
+
+orders[index].status="กำลังชง";
+
+localStorage.setItem(
+"orders",
+JSON.stringify(orders)
+);
+
+loadHistory();
+
+}
+
+function deleteOrder(index){
+
+if(!confirm("ลบออเดอร์ ?")){
+return;
+}
+
+let orders=
+JSON.parse(
+localStorage.getItem("orders") ||
+"[]"
+);
+
+orders.splice(index,1);
+
+localStorage.setItem(
+"orders",
+JSON.stringify(orders)
+);
+
+loadHistory();
+
+}
 renderMenus();
 renderCart();
 
