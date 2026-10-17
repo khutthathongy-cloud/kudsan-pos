@@ -230,21 +230,7 @@ style="width:100%;">
 <div id="dashboard" class="page">
 
 <h2>Dashboard</h2>
-<div class="stat">
 
-📅 ออเดอร์วันนี้
-
-<h3 id="todayOrders">0</h3>
-
-</div>
-
-<div class="stat">
-
-💵 ยอดขายวันนี้
-
-<h3 id="todaySales">0 บาท</h3>
-
-</div>
 <div class="stat">
 <div class="stat">
 📅 ออเดอร์วันนี้
@@ -378,21 +364,6 @@ renderCart();
 
 }
 
-const found=cart.find(x=>x.name===name);
-
-if(found){
-found.qty++;
-}else{
-cart.push({
-name:name,
-price:price,
-qty:1
-});
-}
-
-renderCart();
-
-}
 
 function renderCart(){
 
@@ -712,12 +683,102 @@ html || 'ยังไม่มีประวัติ';
 
 function loadDashboard(){
 
+const today =
+new Date().toLocaleDateString();
+
+let orders =
+JSON.parse(
+localStorage.getItem('orders') || '[]'
+);
+
 let cups=0;
 let sales=0;
 let todaySales=0;
 let todayOrders=0;
 
-...
+let stats={};
+
+orders.forEach(order=>{
+
+const orderDate =
+new Date(order.time)
+.toLocaleDateString();
+
+if(orderDate===today){
+
+todayOrders++;
+
+}
+
+order.items.forEach(item=>{
+
+cups += item.qty;
+
+sales +=
+item.qty *
+(
+item.price +
+(item.toppingPrice || 0)
+);
+
+if(orderDate===today){
+
+todaySales +=
+item.qty *
+(
+item.price +
+(item.toppingPrice || 0)
+);
+
+}
+
+stats[item.name] =
+(stats[item.name] || 0)
++ item.qty;
+
+});
+
+});
+
+document.getElementById(
+'todayOrders'
+).innerText=
+todayOrders+' ออเดอร์';
+
+document.getElementById(
+'todaySales'
+).innerText=
+todaySales+' บาท';
+
+document.getElementById('cups')
+.innerText=
+cups+' แก้ว';
+
+document.getElementById('sales')
+.innerText=
+sales+' บาท';
+
+let html='';
+
+Object.entries(stats)
+.sort((a,b)=>b[1]-a[1])
+.forEach(item=>{
+
+html += `
+<div>
+${item[0]} :
+${item[1]} แก้ว
+</div>
+`;
+
+});
+
+document.getElementById(
+'topMenus'
+).innerHTML =
+html || 'ยังไม่มีข้อมูล';
+
+}
 
 document.getElementById('cups').innerText =
 cups+' แก้ว';
