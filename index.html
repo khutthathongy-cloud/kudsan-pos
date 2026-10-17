@@ -178,6 +178,37 @@ margin-bottom:10px;
 
 <h2>เลือกเมนู</h2>
 
+<div style="margin-bottom:10px">
+
+<button onclick="filterMenu('ทั้งหมด')">
+ทั้งหมด
+</button>
+
+<button onclick="filterMenu('ชา')">
+ชา
+</button>
+
+<button onclick="filterMenu('กาแฟ')">
+กาแฟ
+</button>
+
+<button onclick="filterMenu('นม')">
+นม
+</button>
+
+<button onclick="filterMenu('มัทฉะ')">
+มัทฉะ
+</button>
+
+<button onclick="filterMenu('โกโก้')">
+โกโก้
+</button>
+
+<button onclick="filterMenu('โซดา')">
+โซดา
+</button>
+
+</div>
 <div class="menu-grid" id="menuGrid"></div>
 
 <div class="cart-box">
@@ -232,28 +263,42 @@ margin-bottom:10px;
 
 <script>
 
-const menus=[
+const menus = [
 
-{name:"ชาไทย",price:50},
-{name:"ชาเขียว",price:50},
-{name:"ชาพีช",price:45},
-{name:"ชาดำ",price:45},
-{name:"ชามะนาว",price:45},
+{category:"ชา",name:"ชาดำ",price:45},
+{category:"ชา",name:"ชาพีช",price:45},
+{category:"ชา",name:"ชามะนาว",price:45},
+{category:"ชา",name:"ชาเขียว",price:50},
+{category:"ชา",name:"ชาไทย",price:50},
+{category:"ชา",name:"ชาไทยใส่ชีส",price:50},
+{category:"ชา",name:"Natural Thai Tea",price:50},
 
-{name:"นมสด",price:45},
-{name:"นมชมพู",price:45},
+{category:"นม",name:"นมสด",price:45},
+{category:"นม",name:"นมชมพู",price:45},
 
-{name:"Pure Matcha",price:50},
-{name:"Matcha Latte",price:55},
+{category:"มัทฉะ",name:"Pure Matcha",price:50},
+{category:"มัทฉะ",name:"Matcha Latte",price:55},
+{category:"มัทฉะ",name:"Yuzu Vit-C",price:50},
 
-{name:"โกโก้",price:55},
+{category:"โกโก้",name:"โกโก้",price:55},
 
-{name:"Espresso",price:50},
-{name:"Americano",price:50},
-{name:"Honey Americano",price:50},
-{name:"Latte",price:55},
-{name:"Cappuccino",price:55},
-{name:"Mocha",price:55}
+{category:"กาแฟ",name:"Espresso",price:50},
+{category:"กาแฟ",name:"Americano",price:50},
+{category:"กาแฟ",name:"Honey Americano",price:50},
+{category:"กาแฟ",name:"Cappuccino",price:55},
+{category:"กาแฟ",name:"Latte",price:55},
+{category:"กาแฟ",name:"Mocha",price:55},
+{category:"กาแฟ",name:"Kudsan Iced Coffee",price:60},
+{category:"กาแฟ",name:"Caramel Latte Gold",price:55},
+{category:"กาแฟ",name:"Caramel Macchiato",price:60},
+{category:"กาแฟ",name:"Yuzu Vit-C Americano",price:50},
+{category:"กาแฟ",name:"Lemoncano",price:50},
+{category:"กาแฟ",name:"Kopi",price:45},
+{category:"กาแฟ",name:"Kopi Gold",price:45},
+{category:"กาแฟ",name:"โอเลี้ยงมุกแดง",price:50},
+
+{category:"โซดา",name:"Lime Soda",price:45},
+{category:"โซดา",name:"Honey Lime Soda",price:45}
 
 ];
 
@@ -277,11 +322,11 @@ if(page==="dashboard") loadDashboard();
 
 }
 
-function renderMenus(){
+function renderMenus(menuList = menus){
 
 let html='';
 
-menus.forEach(menu=>{
+menuList.forEach(menu=>{
 
 html+=`
 <div class="menu-card"
@@ -600,6 +645,18 @@ document.getElementById('topMenus').innerHTML=html;
 
 }
 
+function filterMenu(category){
+
+const menuList =
+category === "ทั้งหมด"
+? menus
+: menus.filter(
+m => m.category === category
+);
+
+renderMenus(menuList);
+
+}
 renderMenus();
 renderCart();
 
