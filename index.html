@@ -1,3 +1,171 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KUDSAN POS</title>
+
+<style>
+body{
+font-family:Tahoma,sans-serif;
+margin:0;
+background:#f5f5f5;
+}
+
+header{
+background:#ff6b35;
+color:white;
+padding:15px;
+font-size:24px;
+font-weight:bold;
+text-align:center;
+}
+
+.tabs{
+display:flex;
+background:white;
+position:sticky;
+top:0;
+}
+
+.tab{
+flex:1;
+padding:12px;
+border:none;
+cursor:pointer;
+font-size:16px;
+background:white;
+}
+
+.active{
+background:#ff6b35;
+color:white;
+}
+
+.page{
+display:none;
+padding:15px;
+}
+
+.show{
+display:block;
+}
+
+.menu-grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+gap:10px;
+}
+
+.menu-card{
+background:white;
+padding:15px;
+border-radius:10px;
+box-shadow:0 2px 5px rgba(0,0,0,.15);
+cursor:pointer;
+text-align:center;
+}
+
+.menu-card:hover{
+background:#fff0e8;
+}
+
+.cart-box{
+background:white;
+padding:15px;
+border-radius:10px;
+margin-top:15px;
+}
+
+.cart-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:10px 0;
+border-bottom:1px solid #eee;
+}
+
+.qty-btn{
+width:32px;
+height:32px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+font-size:16px;
+}
+
+.plus{
+background:#28a745;
+color:white;
+}
+
+.minus{
+background:#ffc107;
+}
+
+.remove{
+background:red;
+color:white;
+}
+
+.main-btn{
+padding:10px 15px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+color:white;
+margin-top:10px;
+margin-right:5px;
+}
+
+.save{
+background:green;
+}
+
+.clear{
+background:red;
+}
+
+.queue-card{
+background:white;
+padding:10px;
+border-radius:10px;
+margin-bottom:10px;
+}
+
+.wait{
+border-left:8px solid #ffc107;
+}
+
+.making{
+border-left:8px solid orange;
+}
+
+.done{
+border-left:8px solid green;
+}
+
+.status-btn{
+background:#0078d7;
+color:white;
+padding:8px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+.stat{
+background:white;
+padding:15px;
+border-radius:10px;
+margin-bottom:10px;
+box-shadow:0 1px 3px rgba(0,0,0,.1);
+}
+</style>
+</head>
+
+<body>
+
 <header>KUDSAN POS</header>
 
 <div class="tabs">
@@ -49,12 +217,12 @@
 
 <div class="stat">
 💰 ยอดขายทั้งหมด
-<h1 id="sales">0</h1>
+<h1 id="sales">0 บาท</h1>
 </div>
 
 <div class="stat">
 🥤 จำนวนแก้วทั้งหมด
-<h1 id="cups">0</h1>
+<h1 id="cups">0 แก้ว</h1>
 </div>
 
 <div class="stat">
@@ -63,157 +231,26 @@
 </div>
 
 </div>
-body{
-font-family:Tahoma,sans-serif;
-margin:0;
-background:#f5f5f5;
-}
 
-header{
-background:#ff6b35;
-color:white;
-padding:15px;
-font-size:24px;
-font-weight:bold;
-text-align:center;
-}
+<script>
 
-.tabs{
-display:flex;
-background:white;
-}
-
-.tab{
-flex:1;
-padding:12px;
-border:none;
-cursor:pointer;
-font-size:16px;
-}
-
-.active{
-background:#ff6b35;
-color:white;
-}
-
-.page{
-display:none;
-padding:15px;
-}
-
-.show{
-display:block;
-}
-
-.menu-grid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
-gap:10px;
-}
-
-.menu-card{
-background:white;
-padding:15px;
-border-radius:10px;
-box-shadow:0 2px 5px rgba(0,0,0,.15);
-cursor:pointer;
-text-align:center;
-}
-
-.cart-box{
-background:white;
-padding:15px;
-border-radius:10px;
-margin-top:15px;
-}
-
-.cart-row{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:10px 0;
-border-bottom:1px solid #eee;
-}
-
-.qty-btn{
-width:32px;
-height:32px;
-border:none;
-border-radius:6px;
-cursor:pointer;
-}
-
-.plus{
-background:#28a745;
-color:white;
-}
-
-.minus{
-background:#ffc107;
-}
-
-.remove{
-background:red;
-color:white;
-}
-
-.main-btn{
-padding:10px 15px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-color:white;
-margin-top:10px;
-}
-
-.save{
-background:green;
-}
-
-.clear{
-background:red;
-}
-
-.queue-card{
-background:white;
-padding:10px;
-border-radius:10px;
-margin-bottom:10px;
-}
-
-.wait{
-border-left:8px solid #ffc107;
-}
-
-.making{
-border-left:8px solid orange;
-}
-
-.done{
-border-left:8px solid green;
-}
-
-.status-btn{
-background:#0078d7;
-color:white;
-padding:8px;
-border:none;
-border-radius:6px;
-}
-
-.stat{
-background:white;
-padding:15px;
-border-radius:10px;
-margin-bottom:10px;
-}
 const menus = [
 {name:"ชาไทย",price:50},
 {name:"ชาเขียว",price:50},
 {name:"ชาพีช",price:45},
+{name:"ชาดำ",price:45},
+{name:"ชามะนาว",price:45},
+{name:"นมสด",price:45},
+{name:"นมชมพู",price:45},
+{name:"Pure Matcha",price:50},
+{name:"Matcha Latte",price:55},
 {name:"โกโก้",price:55},
+{name:"Espresso",price:50},
 {name:"Americano",price:50},
-{name:"Latte",price:55}
+{name:"Honey Americano",price:50},
+{name:"Latte",price:55},
+{name:"Cappuccino",price:55},
+{name:"Mocha",price:55}
 ];
 
 let cart=[];
@@ -246,14 +283,16 @@ menus.forEach(menu=>{
 html+=`
 <div class="menu-card"
 onclick="addMenu('${menu.name}',${menu.price})">
+
 <h3>${menu.name}</h3>
 <p>${menu.price} บาท</p>
+
 </div>
 `;
 
 });
 
-menuGrid.innerHTML=html;
+document.getElementById('menuGrid').innerHTML=html;
 
 }
 
@@ -263,10 +302,10 @@ let found=cart.find(i=>i.name===name);
 
 if(found){
 found.qty++;
-} else {
+}else{
 cart.push({
-name,
-price,
+name:name,
+price:price,
 qty:1
 });
 }
@@ -297,7 +336,9 @@ ${item.price} บาท
 <button class="qty-btn minus"
 onclick="decreaseItem(${index})">-</button>
 
+<b style="padding:0 8px;">
 ${item.qty}
+</b>
 
 <button class="qty-btn plus"
 onclick="increaseItem(${index})">+</button>
@@ -306,9 +347,9 @@ onclick="increaseItem(${index})">+</button>
 onclick="removeItem(${index})">🗑</button>
 
 </div>
-
 </div>
 `;
+
 });
 
 document.getElementById('cart').innerHTML=html;
@@ -343,17 +384,20 @@ renderCart();
 
 function clearCart(){
 
+if(confirm("ล้างรายการทั้งหมด ?")){
 cart=[];
-
 renderCart();
+}
 
 }
 
 function saveOrder(){
 
 if(cart.length===0){
+
 alert("ยังไม่มีสินค้า");
 return;
+
 }
 
 let orders=
@@ -364,11 +408,9 @@ localStorage.getItem("orders") || "[]"
 orders.push({
 
 orderNo:
-"ORD-"+
-String(orders.length+1)
-.padStart(4,"0"),
+"ORD-"+String(orders.length+1).padStart(4,"0"),
 
-time:new Date().toLocaleString(),
+time:new Date().toLocaleString('th-TH'),
 
 status:"รอชง",
 
@@ -385,7 +427,7 @@ cart=[];
 
 renderCart();
 
-alert("บันทึกแล้ว");
+alert("บันทึกออเดอร์เรียบร้อย");
 
 }
 
@@ -400,14 +442,24 @@ let html='';
 
 orders.forEach((o,index)=>{
 
-if(o.status==="เสร็จแล้ว") return;
+if(o.status==="เสร็จแล้ว"){
+return;
+}
+
+let cls="wait";
+
+if(o.status==="กำลังชง"){
+cls="making";
+}
 
 html+=`
-<div class="queue-card">
+<div class="queue-card ${cls}">
 
 <h3>${o.orderNo}</h3>
 
-${o.time}<br><br>
+${o.time}
+
+<br><br>
 
 ${o.items.map(i=>
 `${i.name} x${i.qty}`
@@ -415,7 +467,7 @@ ${o.items.map(i=>
 
 <br><br>
 
-${o.status}
+<b>${o.status}</b>
 
 <br><br>
 
@@ -431,8 +483,8 @@ onclick="nextStatus(${index})">
 
 });
 
-queueList.innerHTML=
-html || "ไม่มีคิว";
+document.getElementById("queueList").innerHTML=
+html || "<h3>ไม่มีคิวรอชง</h3>";
 
 }
 
@@ -447,9 +499,14 @@ if(orders[index].status==="รอชง"){
 
 orders[index].status="กำลังชง";
 
-}else{
+}else if(orders[index].status==="กำลังชง"){
 
 orders[index].status="เสร็จแล้ว";
+
+alert(
+orders[index].orderNo +
+" พร้อมเสิร์ฟ"
+);
 
 }
 
@@ -489,13 +546,17 @@ ${o.items.map(i=>
 `${i.name} x${i.qty}`
 ).join('<br>')}
 
+<br><br>
+
+✔ เสร็จแล้ว
+
 </div>
 `;
 
 });
 
-historyList.innerHTML=
-html || "ยังไม่มีประวัติ";
+document.getElementById("historyList").innerHTML=
+html || "<h3>ยังไม่มีประวัติ</h3>";
 
 }
 
@@ -508,6 +569,7 @@ localStorage.getItem("orders") || "[]"
 
 let cups=0;
 let sales=0;
+let menuStats={};
 
 orders.forEach(o=>{
 
@@ -516,17 +578,44 @@ o.items.forEach(i=>{
 cups+=i.qty;
 sales+=(i.qty*i.price);
 
-});
+menuStats[i.name]=
+(menuStats[i.name]||0)+i.qty;
 
 });
 
-document.getElementById('cups')
-.innerText=cups;
+});
 
-document.getElementById('sales')
-.innerText=sales+" บาท";
+document.getElementById("cups").innerText=
+cups+" แก้ว";
+
+document.getElementById("sales").innerText=
+sales+" บาท";
+
+let ranking=
+Object.entries(menuStats)
+.sort((a,b)=>b[1]-a[1]);
+
+let html='';
+
+ranking.forEach(item=>{
+
+html+=`
+<div>
+${item[0]} : ${item[1]} แก้ว
+</div>
+`;
+
+});
+
+document.getElementById("topMenus").innerHTML=
+html || "ยังไม่มีข้อมูล";
 
 }
 
 renderMenus();
 renderCart();
+
+</script>
+
+</body>
+</html>
