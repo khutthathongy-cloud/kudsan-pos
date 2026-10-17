@@ -1,0 +1,532 @@
+<header>KUDSAN POS</header>
+
+<div class="tabs">
+<button class="tab active" onclick="openPage(event,'order')">รับออเดอร์</button>
+<button class="tab" onclick="openPage(event,'queue')">คิวชง</button>
+<button class="tab" onclick="openPage(event,'history')">ประวัติ</button>
+<button class="tab" onclick="openPage(event,'dashboard')">Dashboard</button>
+</div>
+
+<div id="order" class="page show">
+
+<h2>เลือกเมนู</h2>
+
+<div class="menu-grid" id="menuGrid"></div>
+
+<div class="cart-box">
+
+<h3>รายการสินค้า</h3>
+
+<div id="cart"></div>
+
+<h2>รวม : <span id="total">0</span> บาท</h2>
+
+<button class="main-btn save" onclick="saveOrder()">
+บันทึกออเดอร์
+</button>
+
+<button class="main-btn clear" onclick="clearCart()">
+ล้างรายการ
+</button>
+
+</div>
+
+</div>
+
+<div id="queue" class="page">
+<h2>คิวชง</h2>
+<div id="queueList"></div>
+</div>
+
+<div id="history" class="page">
+<h2>ประวัติออเดอร์</h2>
+<div id="historyList"></div>
+</div>
+
+<div id="dashboard" class="page">
+
+<h2>Dashboard</h2>
+
+<div class="stat">
+💰 ยอดขายทั้งหมด
+<h1 id="sales">0</h1>
+</div>
+
+<div class="stat">
+🥤 จำนวนแก้วทั้งหมด
+<h1 id="cups">0</h1>
+</div>
+
+<div class="stat">
+🏆 เมนูขายดี
+<div id="topMenus"></div>
+</div>
+
+</div>
+body{
+font-family:Tahoma,sans-serif;
+margin:0;
+background:#f5f5f5;
+}
+
+header{
+background:#ff6b35;
+color:white;
+padding:15px;
+font-size:24px;
+font-weight:bold;
+text-align:center;
+}
+
+.tabs{
+display:flex;
+background:white;
+}
+
+.tab{
+flex:1;
+padding:12px;
+border:none;
+cursor:pointer;
+font-size:16px;
+}
+
+.active{
+background:#ff6b35;
+color:white;
+}
+
+.page{
+display:none;
+padding:15px;
+}
+
+.show{
+display:block;
+}
+
+.menu-grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+gap:10px;
+}
+
+.menu-card{
+background:white;
+padding:15px;
+border-radius:10px;
+box-shadow:0 2px 5px rgba(0,0,0,.15);
+cursor:pointer;
+text-align:center;
+}
+
+.cart-box{
+background:white;
+padding:15px;
+border-radius:10px;
+margin-top:15px;
+}
+
+.cart-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:10px 0;
+border-bottom:1px solid #eee;
+}
+
+.qty-btn{
+width:32px;
+height:32px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+.plus{
+background:#28a745;
+color:white;
+}
+
+.minus{
+background:#ffc107;
+}
+
+.remove{
+background:red;
+color:white;
+}
+
+.main-btn{
+padding:10px 15px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+color:white;
+margin-top:10px;
+}
+
+.save{
+background:green;
+}
+
+.clear{
+background:red;
+}
+
+.queue-card{
+background:white;
+padding:10px;
+border-radius:10px;
+margin-bottom:10px;
+}
+
+.wait{
+border-left:8px solid #ffc107;
+}
+
+.making{
+border-left:8px solid orange;
+}
+
+.done{
+border-left:8px solid green;
+}
+
+.status-btn{
+background:#0078d7;
+color:white;
+padding:8px;
+border:none;
+border-radius:6px;
+}
+
+.stat{
+background:white;
+padding:15px;
+border-radius:10px;
+margin-bottom:10px;
+}
+const menus = [
+{name:"ชาไทย",price:50},
+{name:"ชาเขียว",price:50},
+{name:"ชาพีช",price:45},
+{name:"โกโก้",price:55},
+{name:"Americano",price:50},
+{name:"Latte",price:55}
+];
+
+let cart=[];
+
+function openPage(evt,page){
+
+document.querySelectorAll('.page')
+.forEach(p=>p.classList.remove('show'));
+
+document.querySelectorAll('.tab')
+.forEach(t=>t.classList.remove('active'));
+
+document.getElementById(page)
+.classList.add('show');
+
+evt.target.classList.add('active');
+
+if(page==="queue") loadQueue();
+if(page==="history") loadHistory();
+if(page==="dashboard") loadDashboard();
+
+}
+
+function renderMenus(){
+
+let html='';
+
+menus.forEach(menu=>{
+
+html+=`
+<div class="menu-card"
+onclick="addMenu('${menu.name}',${menu.price})">
+<h3>${menu.name}</h3>
+<p>${menu.price} บาท</p>
+</div>
+`;
+
+});
+
+menuGrid.innerHTML=html;
+
+}
+
+function addMenu(name,price){
+
+let found=cart.find(i=>i.name===name);
+
+if(found){
+found.qty++;
+} else {
+cart.push({
+name,
+price,
+qty:1
+});
+}
+
+renderCart();
+
+}
+
+function renderCart(){
+
+let html='';
+let total=0;
+
+cart.forEach((item,index)=>{
+
+total+=item.qty*item.price;
+
+html+=`
+<div class="cart-row">
+
+<div>
+<b>${item.name}</b><br>
+${item.price} บาท
+</div>
+
+<div>
+
+<button class="qty-btn minus"
+onclick="decreaseItem(${index})">-</button>
+
+${item.qty}
+
+<button class="qty-btn plus"
+onclick="increaseItem(${index})">+</button>
+
+<button class="qty-btn remove"
+onclick="removeItem(${index})">🗑</button>
+
+</div>
+
+</div>
+`;
+});
+
+document.getElementById('cart').innerHTML=html;
+document.getElementById('total').innerText=total;
+
+}
+
+function increaseItem(i){
+cart[i].qty++;
+renderCart();
+}
+
+function decreaseItem(i){
+
+cart[i].qty--;
+
+if(cart[i].qty<=0){
+cart.splice(i,1);
+}
+
+renderCart();
+
+}
+
+function removeItem(i){
+
+cart.splice(i,1);
+
+renderCart();
+
+}
+
+function clearCart(){
+
+cart=[];
+
+renderCart();
+
+}
+
+function saveOrder(){
+
+if(cart.length===0){
+alert("ยังไม่มีสินค้า");
+return;
+}
+
+let orders=
+JSON.parse(
+localStorage.getItem("orders") || "[]"
+);
+
+orders.push({
+
+orderNo:
+"ORD-"+
+String(orders.length+1)
+.padStart(4,"0"),
+
+time:new Date().toLocaleString(),
+
+status:"รอชง",
+
+items:[...cart]
+
+});
+
+localStorage.setItem(
+"orders",
+JSON.stringify(orders)
+);
+
+cart=[];
+
+renderCart();
+
+alert("บันทึกแล้ว");
+
+}
+
+function loadQueue(){
+
+let orders=
+JSON.parse(
+localStorage.getItem("orders") || "[]"
+);
+
+let html='';
+
+orders.forEach((o,index)=>{
+
+if(o.status==="เสร็จแล้ว") return;
+
+html+=`
+<div class="queue-card">
+
+<h3>${o.orderNo}</h3>
+
+${o.time}<br><br>
+
+${o.items.map(i=>
+`${i.name} x${i.qty}`
+).join('<br>')}
+
+<br><br>
+
+${o.status}
+
+<br><br>
+
+<button class="status-btn"
+onclick="nextStatus(${index})">
+
+เปลี่ยนสถานะ
+
+</button>
+
+</div>
+`;
+
+});
+
+queueList.innerHTML=
+html || "ไม่มีคิว";
+
+}
+
+function nextStatus(index){
+
+let orders=
+JSON.parse(
+localStorage.getItem("orders") || "[]"
+);
+
+if(orders[index].status==="รอชง"){
+
+orders[index].status="กำลังชง";
+
+}else{
+
+orders[index].status="เสร็จแล้ว";
+
+}
+
+localStorage.setItem(
+"orders",
+JSON.stringify(orders)
+);
+
+loadQueue();
+
+}
+
+function loadHistory(){
+
+let orders=
+JSON.parse(
+localStorage.getItem("orders") || "[]"
+);
+
+let html='';
+
+orders
+.filter(o=>o.status==="เสร็จแล้ว")
+.reverse()
+.forEach(o=>{
+
+html+=`
+<div class="queue-card done">
+
+<h3>${o.orderNo}</h3>
+
+${o.time}
+
+<br><br>
+
+${o.items.map(i=>
+`${i.name} x${i.qty}`
+).join('<br>')}
+
+</div>
+`;
+
+});
+
+historyList.innerHTML=
+html || "ยังไม่มีประวัติ";
+
+}
+
+function loadDashboard(){
+
+let orders=
+JSON.parse(
+localStorage.getItem("orders") || "[]"
+);
+
+let cups=0;
+let sales=0;
+
+orders.forEach(o=>{
+
+o.items.forEach(i=>{
+
+cups+=i.qty;
+sales+=(i.qty*i.price);
+
+});
+
+});
+
+document.getElementById('cups')
+.innerText=cups;
+
+document.getElementById('sales')
+.innerText=sales+" บาท";
+
+}
+
+renderMenus();
+renderCart();
