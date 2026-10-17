@@ -395,7 +395,10 @@ x.classList.remove('active');
 });
 
 document.getElementById(page).classList.add('show');
+
+if(evt){
 evt.target.classList.add('active');
+}
 
 if(page==="queue")
 loadQueue();
