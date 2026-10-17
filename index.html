@@ -185,21 +185,13 @@ border-left:8px solid green;
 .status-btn{
 
 width:100%;
-
 padding:18px;
-
 font-size:24px;
-
 font-weight:bold;
-
 background:#28a745;
-
 color:white;
-
 border:none;
-
 border-radius:12px;
-
 cursor:pointer;
 
 }
@@ -677,6 +669,7 @@ JSON.stringify(orders)
 );
 
 loadQueue();
+loadHistory();
 
 }
 
@@ -841,7 +834,34 @@ i.qty
 
 }
 
-function deleteOrder(orderNo){
+function restoreOrder(orderNo){
+
+let orders=
+JSON.parse(
+localStorage.getItem('orders') || '[]'
+);
+
+let order=
+orders.find(
+o=>o.orderNo===orderNo
+);
+
+if(order){
+
+order.status="กำลังชง";
+
+localStorage.setItem(
+'orders',
+JSON.stringify(orders)
+);
+
+loadHistory();
+
+alert('ย้ายกลับเข้าคิวชงแล้ว');
+
+}
+
+}
 
 if(
 !confirm(
