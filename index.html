@@ -6,6 +6,44 @@
 
 <title>KUDSAN POS</title>
 
+.category-container{
+
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+margin-bottom:15px;
+
+}
+
+.category-btn{
+
+padding:12px 20px;
+
+font-size:18px;
+
+font-weight:bold;
+
+background:#ff6b35;
+
+color:white;
+
+border:none;
+
+border-radius:12px;
+
+cursor:pointer;
+
+box-shadow:0 2px 5px rgba(0,0,0,.2);
+
+}
+
+.category-btn:hover{
+
+background:#e65b28;
+
+transform:scale(1.03);
+
+}
 <style>
 
 body{
@@ -178,34 +216,62 @@ margin-bottom:10px;
 
 <h2>เลือกเมนู</h2>
 
-<div style="margin-bottom:10px">
+<div class="category-container">
 
-<button onclick="filterMenu('ทั้งหมด')">
-ทั้งหมด
+<button
+class="category-btn"
+onclick="filterMenu('ทั้งหมด')">
+
+🍹 ทั้งหมด
+
 </button>
 
-<button onclick="filterMenu('ชา')">
-ชา
+<button
+class="category-btn"
+onclick="filterMenu('ชา')">
+
+🍵 ชา
+
 </button>
 
-<button onclick="filterMenu('กาแฟ')">
-กาแฟ
+<button
+class="category-btn"
+onclick="filterMenu('กาแฟ')">
+
+☕ กาแฟ
+
 </button>
 
-<button onclick="filterMenu('นม')">
-นม
+<button
+class="category-btn"
+onclick="filterMenu('นม')">
+
+🥛 นม
+
 </button>
 
-<button onclick="filterMenu('มัทฉะ')">
-มัทฉะ
+<button
+class="category-btn"
+onclick="filterMenu('มัทฉะ')">
+
+🍵 มัทฉะ
+
 </button>
 
-<button onclick="filterMenu('โกโก้')">
-โกโก้
+<button
+class="category-btn"
+onclick="filterMenu('โกโก้')">
+
+🍫 โกโก้
+
 </button>
 
-<button onclick="filterMenu('โซดา')">
-โซดา
+<button
+class="category-btn"
+onclick="filterMenu('โซดา')">
+
+🥤 โซดา
+
 </button>
 
 </div>
