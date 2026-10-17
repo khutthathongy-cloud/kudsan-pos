@@ -183,18 +183,26 @@ border-left:8px solid green;
 }
 
 .status-btn{
-background:#0078d7;
-color:white;
-padding:8px;
-border:none;
-border-radius:6px;
-}
+.status-btn{
 
-.stat{
-background:white;
-padding:15px;
-border-radius:10px;
-margin-bottom:10px;
+width:100%;
+
+padding:18px;
+
+font-size:24px;
+
+font-weight:bold;
+
+background:#28a745;
+
+color:white;
+
+border:none;
+
+border-radius:12px;
+
+cursor:pointer;
+
 }
 
 </style>
@@ -556,7 +564,7 @@ orders.push({
 
 orderNo,
 time:new Date().toLocaleString(),
-status:"รอชง",
+status:"กำลังชง",
 items:[...cart]
 
 });
@@ -590,8 +598,10 @@ let cls='wait';
 if(order.status==='กำลังชง')
 cls='making';
 
-if(order.status==='เสร็จแล้ว')
-cls='done';
+if(order.status==='เสร็จแล้ว'){
+return;
+}
+`
 
 html+=`
 
@@ -618,7 +628,7 @@ ${order.status}
 class="status-btn"
 onclick="nextStatus(${index})">
 
-เปลี่ยนสถานะ
+✅ เสร็จแล้ว
 
 </button>
 
@@ -634,20 +644,13 @@ document.getElementById('queueList').innerHTML=html;
 
 function nextStatus(index){
 
-let orders=
+let orders =
 JSON.parse(
-localStorage.getItem('orders')||'[]'
+localStorage.getItem('orders') || '[]'
 );
 
-if(orders[index].status==="รอชง"){
-
-orders[index].status="กำลังชง";
-
-}else if(orders[index].status==="กำลังชง"){
-
-orders[index].status="เสร็จแล้ว";
-
-}
+orders[index].status =
+"เสร็จแล้ว";
 
 localStorage.setItem(
 'orders',
