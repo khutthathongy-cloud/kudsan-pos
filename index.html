@@ -195,7 +195,31 @@ border-radius:12px;
 cursor:pointer;
 
 }
+.sweet-btn{
 
+display:block;
+
+width:100%;
+
+padding:15px;
+
+margin:8px 0;
+
+font-size:22px;
+
+font-weight:bold;
+
+background:#ff6b35;
+
+color:white;
+
+border:none;
+
+border-radius:10px;
+
+cursor:pointer;
+
+}
 </style>
 </head>
 
@@ -398,7 +422,8 @@ const menus = [
 ];
 
 let cart=[];
-
+let selectedMenuName='';
+let selectedMenuPrice=0;
 function openPage(evt,page){
 
 document.querySelectorAll('.page').forEach(x=>{
@@ -448,28 +473,18 @@ document.getElementById('menuGrid').innerHTML=html;
 
 function addMenu(name,price){
 
-const sweetness =
-window.confirm(
-"ต้องการหวาน 100% ใช่หรือไม่?\n\nกด OK = 100%\nกด Cancel = 50%"
-)
-?
-"100%"
-:
-"50%";
+selectedMenuName=name;
+selectedMenuPrice=price;
 
-cart.push({
+document.getElementById(
+'popupTitle'
+).innerText =
+name;
 
-name:name,
-
-price:price,
-
-sweetness:sweetness,
-
-qty:1
-
-});
-
-renderCart();
+document.getElementById(
+'sweetPopup'
+).style.display =
+'block';
 
 }
 
@@ -931,11 +946,95 @@ JSON.stringify(orders)
 loadHistory();
 
 }
+function chooseSweet(level){
 
+cart.push({
+
+name:selectedMenuName,
+
+price:selectedMenuPrice,
+
+sweetness:level,
+
+qty:1
+
+});
+
+document.getElementById(
+'sweetPopup'
+).style.display =
+'none';
+
+renderCart();
+
+}
+
+function closeSweetPopup(){
+
+document.getElementById(
+'sweetPopup'
+).style.display =
+'none';
+
+}
 renderMenus();
 renderCart();
 
 </script>
+<div id="sweetPopup"
+style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.5);
+z-index:999;
+">
 
+<div
+style="
+background:white;
+width:320px;
+padding:20px;
+border-radius:15px;
+margin:80px auto;
+text-align:center;
+">
+
+<h2 id="popupTitle">
+เลือกความหวาน
+</h2>
+
+<button class="sweet-btn" onclick="chooseSweet('0%')">
+0%
+</button>
+
+<button class="sweet-btn" onclick="chooseSweet('25%')">
+25%
+</button>
+
+<button class="sweet-btn" onclick="chooseSweet('50%')">
+50%
+</button>
+
+<button class="sweet-btn" onclick="chooseSweet('75%')">
+75%
+</button>
+
+<button class="sweet-btn" onclick="chooseSweet('100%')">
+100%
+</button>
+
+<br><br>
+
+<button onclick="closeSweetPopup()">
+ยกเลิก
+</button>
+
+</div>
+
+</div>
 </body>
 </html>
