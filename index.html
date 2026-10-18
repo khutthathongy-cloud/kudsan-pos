@@ -309,23 +309,9 @@ onclick="filterMenu('โซดา')">
 </div>
 <div class="menu-grid" id="menuGrid"></div>
 
-<div class="cart-box">
-
 <h3>รายการสินค้า</h3>
 
 <div id="cart"></div>
-
-<h2>รวม : <span id="total">0</span> บาท</h2>
-
-<button class="main-btn save" onclick="saveOrder()">
-บันทึกออเดอร์
-</button>
-
-<button class="main-btn clear" onclick="clearCart()">
-ล้างรายการ
-</button>
-
-</div>
 
 <h2>รวม : <span id="total">0</span> บาท</h2>
 
@@ -459,7 +445,7 @@ onclick="addMenu('${menu.name}',${menu.price})">
 <h3>${menu.name}</h3>
 <p>${menu.price} บาท</p>
 </div>
-`;
+;
 
 });
 
@@ -498,12 +484,7 @@ html+=`
 
 <div class="cart-row">
 
-...
-
-</div>
-
-`;
-
+<div>
 <b>${item.name}</b><br>
 ${item.price} บาท
 
@@ -541,7 +522,7 @@ onclick="removeItem(${index})">
 
 </div>
 
-`;
+;
 
 });
 
@@ -701,7 +682,7 @@ onclick="nextStatus(${index})">
 
 </div>
 
-`;
+;
 
 });
 
@@ -852,7 +833,7 @@ onclick="deleteOrder('${order.orderNo}')">
 
 </div>
 
-`;
+;
 
 });
 
