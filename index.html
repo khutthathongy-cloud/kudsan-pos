@@ -448,7 +448,16 @@ document.getElementById('menuGrid').innerHTML=html;
 
 function addMenu(name,price){
 
-let found=cart.find(i=>i.name===name);
+const sweetness =
+document.getElementById(
+"sweetness"
+).value;
+
+let found = cart.find(
+i =>
+i.name === name &&
+i.sweetness === sweetness
+);
 
 if(found){
 
@@ -456,16 +465,16 @@ found.qty++;
 
 }else{
 
-const sweetness =
-document.getElementById(
-"sweetness"
-).value;
-
 cart.push({
-name,
-price,
-sweetness,
+
+name:name,
+
+price:price,
+
+sweetness:sweetness,
+
 qty:1
+
 });
 
 }
