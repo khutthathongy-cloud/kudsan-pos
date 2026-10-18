@@ -449,21 +449,14 @@ document.getElementById('menuGrid').innerHTML=html;
 function addMenu(name,price){
 
 const sweetness =
-document.getElementById(
-"sweetness"
-).value;
-
-let found = cart.find(
-i =>
-i.name === name &&
-i.sweetness === sweetness
+prompt(
+"เลือกระดับความหวาน\n\n0%\n25%\n50%\n75%\n100%",
+"100%"
 );
 
-if(found){
-
-found.qty++;
-
-}else{
+if(sweetness===null){
+return;
+}
 
 cart.push({
 
@@ -477,11 +470,10 @@ qty:1
 
 });
 
-}
-
 renderCart();
 
 }
+
 
 function renderCart(){
 
