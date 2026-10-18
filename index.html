@@ -195,31 +195,7 @@ border-radius:12px;
 cursor:pointer;
 
 }
-.sweet-btn{
 
-display:block;
-
-width:100%;
-
-padding:15px;
-
-margin:8px 0;
-
-font-size:22px;
-
-font-weight:bold;
-
-background:#ff6b35;
-
-color:white;
-
-border:none;
-
-border-radius:10px;
-
-cursor:pointer;
-
-}
 </style>
 </head>
 
@@ -308,6 +284,24 @@ onclick="filterMenu('โซดา')">
 
 </div>
 <div class="menu-grid" id="menuGrid"></div>
+
+<div class="cart-box">
+<h3>ตัวเลือกเครื่องดื่ม</h3>
+
+<p>ระดับความหวาน</p>
+
+<select id="sweetness">
+
+<option value="0%">0%</option>
+<option value="25%">25%</option>
+<option value="50%">50%</option>
+<option value="75%">75%</option>
+<option value="100%" selected>100%</option>
+
+</select>
+
+</div>
+`
 
 <h3>รายการสินค้า</h3>
 
@@ -404,8 +398,7 @@ const menus = [
 ];
 
 let cart=[];
-let selectedMenuName='';
-let selectedMenuPrice=0;
+
 function openPage(evt,page){
 
 document.querySelectorAll('.page').forEach(x=>{
@@ -445,7 +438,7 @@ onclick="addMenu('${menu.name}',${menu.price})">
 <h3>${menu.name}</h3>
 <p>${menu.price} บาท</p>
 </div>
-;
+`;
 
 });
 
@@ -455,21 +448,31 @@ document.getElementById('menuGrid').innerHTML=html;
 
 function addMenu(name,price){
 
-selectedMenuName=name;
-selectedMenuPrice=price;
+let found=cart.find(i=>i.name===name);
 
-document.getElementById(
-'popupTitle'
-).innerText =
-name;
+if(found){
 
+found.qty++;
+
+}else{
+
+const sweetness =
 document.getElementById(
-'sweetPopup'
-).style.display =
-'block';
+"sweetness"
+).value;
+
+cart.push({
+name,
+price,
+sweetness,
+qty:1
+});
 
 }
 
+renderCart();
+
+}
 
 function renderCart(){
 
@@ -522,7 +525,7 @@ onclick="removeItem(${index})">
 
 </div>
 
-;
+`;
 
 });
 
@@ -682,7 +685,7 @@ onclick="nextStatus(${index})">
 
 </div>
 
-;
+`;
 
 });
 
@@ -833,7 +836,7 @@ onclick="deleteOrder('${order.orderNo}')">
 
 </div>
 
-;
+`;
 
 });
 
@@ -928,95 +931,11 @@ JSON.stringify(orders)
 loadHistory();
 
 }
-function chooseSweet(level){
 
-cart.push({
-
-name:selectedMenuName,
-
-price:selectedMenuPrice,
-
-sweetness:level,
-
-qty:1
-
-});
-
-document.getElementById(
-'sweetPopup'
-).style.display =
-'none';
-
-renderCart();
-
-}
-
-function closeSweetPopup(){
-
-document.getElementById(
-'sweetPopup'
-).style.display =
-'none';
-
-}
 renderMenus();
 renderCart();
 
 </script>
-<div id="sweetPopup"
-style="
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,.5);
-z-index:999;
-">
 
-<div
-style="
-background:white;
-width:320px;
-padding:20px;
-border-radius:15px;
-margin:80px auto;
-text-align:center;
-">
-
-<h2 id="popupTitle">
-เลือกความหวาน
-</h2>
-
-<button class="sweet-btn" onclick="chooseSweet('0%')">
-0%
-</button>
-
-<button class="sweet-btn" onclick="chooseSweet('25%')">
-25%
-</button>
-
-<button class="sweet-btn" onclick="chooseSweet('50%')">
-50%
-</button>
-
-<button class="sweet-btn" onclick="chooseSweet('75%')">
-75%
-</button>
-
-<button class="sweet-btn" onclick="chooseSweet('100%')">
-100%
-</button>
-
-<br><br>
-
-<button onclick="closeSweetPopup()">
-ยกเลิก
-</button>
-
-</div>
-
-</div>
 </body>
 </html>
