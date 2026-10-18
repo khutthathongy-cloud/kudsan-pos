@@ -449,14 +449,13 @@ document.getElementById('menuGrid').innerHTML=html;
 function addMenu(name,price){
 
 const sweetness =
-prompt(
-"เลือกระดับความหวาน\n\n0%\n25%\n50%\n75%\n100%",
+window.confirm(
+"ต้องการหวาน 100% ใช่หรือไม่?\n\nกด OK = 100%\nกด Cancel = 50%"
+)
+?
 "100%"
-);
-
-if(sweetness===null){
-return;
-}
+:
+"50%";
 
 cart.push({
 
